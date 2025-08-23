@@ -39,7 +39,9 @@ export default function ReportPage() {
           <p className="text-muted-foreground">Generated on: {currentDate}</p>
         </div>
         <Button onClick={() => window.print()} className="print:hidden">
-            <Printer className="mr-2 h-4 w-4" /> Print Report
+            <div>
+              <Printer className="mr-2 h-4 w-4" /> Print Report
+            </div>
         </Button>
       </div>
 
