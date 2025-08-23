@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -10,13 +12,18 @@ import { Separator } from '@/components/ui/separator';
 import { Leaf, Printer } from 'lucide-react';
 import AllocationChart from '@/components/dashboard/allocation-chart';
 import PerformanceChart from '@/components/dashboard/performance-chart';
+import { useState, useEffect } from 'react';
 
 export default function ReportPage() {
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const [currentDate, setCurrentDate] = useState('');
+
+  useEffect(() => {
+    setCurrentDate(new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }));
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 bg-background print:bg-white text-foreground print:text-black">
