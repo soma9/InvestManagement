@@ -65,10 +65,8 @@ export default function GoalsPage() {
           onAddGoal={addGoal}
         >
           <Button>
-            <React.Fragment>
-              <PlusCircle />
-              <span>Add New Goal</span>
-            </React.Fragment>
+            <PlusCircle />
+            <span>Add New Goal</span>
           </Button>
         </AddGoalDialog>
       </div>
