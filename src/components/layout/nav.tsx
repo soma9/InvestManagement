@@ -56,10 +56,10 @@ export default function Nav() {
                   tooltip={item.label}
                   asChild
                 >
-                  <>
+                  <div>
                     <item.icon />
                     <span>{item.label}</span>
-                  </>
+                  </div>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
@@ -77,10 +77,10 @@ export default function Nav() {
                   tooltip={item.label}
                   asChild
                 >
-                  <>
+                  <div>
                     <item.icon />
                     <span>{item.label}</span>
-                  </>
+                  </div>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
