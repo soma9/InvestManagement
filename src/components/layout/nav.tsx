@@ -20,6 +20,7 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
+import React from 'react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -55,8 +56,10 @@ export default function Nav() {
                   isActive={pathname === item.href}
                   tooltip={item.label}
                 >
-                  <item.icon />
-                  <span>{item.label}</span>
+                  <React.Fragment>
+                    <item.icon />
+                    <span>{item.label}</span>
+                  </React.Fragment>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
@@ -74,8 +77,10 @@ export default function Nav() {
                   isActive={pathname === item.href}
                   tooltip={item.label}
                 >
-                  <item.icon />
-                  <span>{item.label}</span>
+                  <React.Fragment>
+                    <item.icon />
+                    <span>{item.label}</span>
+                  </React.Fragment>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
