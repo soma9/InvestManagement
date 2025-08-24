@@ -7,21 +7,9 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { useCurrency } from '@/context/currency-context';
-
-const chartData = [
-  { month: 'Jan', portfolio: 86000 },
-  { month: 'Feb', portfolio: 92000 },
-  { month: 'Mar', portfolio: 90000 },
-  { month: 'Apr', portfolio: 98000 },
-  { month: 'May', portfolio: 105000 },
-  { month: 'Jun', portfolio: 102000 },
-  { month: 'Jul', portfolio: 110000 },
-  { month: 'Aug', portfolio: 115000 },
-  { month: 'Sep', portfolio: 112000 },
-  { month: 'Oct', portfolio: 118000 },
-  { month: 'Nov', portfolio: 124000 },
-  { month: 'Dec', portfolio: 125430 },
-];
+import type { Transaction } from '@/context/transaction-context';
+import { useMemo } from 'react';
+import { format, subMonths, startOfMonth } from 'date-fns';
 
 const chartConfig = {
   portfolio: {
@@ -30,8 +18,63 @@ const chartConfig = {
   },
 };
 
-export default function PerformanceChart() {
+export default function PerformanceChart({ transactions }: { transactions: Transaction[] }) {
   const { formatCurrency, convertFromUSD, currency } = useCurrency();
+
+  const chartData = useMemo(() => {
+    const twelveMonthsAgo = subMonths(new Date(), 11);
+    const monthlyData: { month: string; portfolio: number, originalValue: number }[] = [];
+
+    // Initialize months
+    for (let i = 0; i < 12; i++) {
+      const monthDate = startOfMonth(subMonths(new Date(), 11 - i));
+      monthlyData.push({ month: format(monthDate, 'MMM'), portfolio: 0, originalValue: 0 });
+    }
+
+    let runningTotal = 0;
+    const sortedTransactions = [...transactions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    for (const transaction of sortedTransactions) {
+      const transactionDate = new Date(transaction.date);
+      if (transactionDate < startOfMonth(twelveMonthsAgo)) {
+        if (transaction.type === 'income') {
+          runningTotal += transaction.amount;
+        } else {
+          runningTotal -= transaction.amount;
+        }
+      }
+    }
+
+    monthlyData.forEach((monthData, index) => {
+        const currentMonthDate = startOfMonth(subMonths(new Date(), 11 - index));
+        const nextMonthDate = startOfMonth(subMonths(new Date(), 10 - index));
+        
+        const monthTransactions = sortedTransactions.filter(t => {
+            const tDate = new Date(t.date);
+            return tDate >= currentMonthDate && tDate < nextMonthDate;
+        });
+
+        if (index === 0) {
+            monthData.portfolio = runningTotal;
+        } else {
+            monthData.portfolio = monthlyData[index - 1].portfolio;
+        }
+        
+        for (const transaction of monthTransactions) {
+            if (transaction.type === 'income') {
+                monthData.portfolio += transaction.amount;
+            } else {
+                monthData.portfolio -= transaction.amount;
+            }
+        }
+    });
+
+    monthlyData.forEach(md => md.originalValue = md.portfolio);
+
+    return monthlyData;
+
+  }, [transactions]);
+  
   const convertedChartData = chartData.map(item => ({
       ...item,
       portfolio: convertFromUSD(item.portfolio),
@@ -61,10 +104,11 @@ export default function PerformanceChart() {
           axisLine={false}
           tickMargin={8}
           tickFormatter={(value) => {
+            const numericValue = typeof value === 'number' ? value : 0;
             if (currency === 'JPY' || currency === 'INR') {
-                return `${Math.round(value / 1000)}k`
+                return `${Math.round(numericValue / 1000)}k`
             }
-            return `$${(value / 1000).toFixed(0)}k`
+            return `$${(numericValue / 1000).toFixed(0)}k`
           }}
         />
         <ChartTooltip
@@ -74,7 +118,7 @@ export default function PerformanceChart() {
               labelFormatter={(value, payload) =>
                 `Value in ${payload[0]?.payload.month}`
               }
-              formatter={(value, name, item) => formatCurrency(chartData.find(d => d.month === item.payload.month)?.portfolio || 0)}
+              formatter={(value, name, item) => formatCurrency(item.payload.originalValue)}
             />
           }
         />

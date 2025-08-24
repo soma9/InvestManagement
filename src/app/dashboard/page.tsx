@@ -102,7 +102,7 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <PerformanceChart />
+            <PerformanceChart transactions={transactions} />
           </CardContent>
         </Card>
         <Card className="lg:col-span-2">

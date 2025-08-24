@@ -17,6 +17,7 @@ import { useCurrency } from '@/context/currency-context';
 import { getAiSummary } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTransactions } from '@/context/transaction-context';
 
 export default function ReportPage() {
   const { formatCurrency } = useCurrency();
@@ -24,6 +25,7 @@ export default function ReportPage() {
   const [summary, setSummary] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { transactions } = useTransactions();
 
   useEffect(() => {
     setCurrentDate(new Date().toLocaleDateString('en-US', {
@@ -157,7 +159,7 @@ export default function ReportPage() {
           <section className='break-after-page'>
              <h3 className="text-lg font-semibold mb-4 font-headline">Portfolio Performance (Last 12 Months)</h3>
               <div className='print:w-full print:h-[400px]'>
-                <PerformanceChart />
+                <PerformanceChart transactions={transactions} />
               </div>
           </section>
           
