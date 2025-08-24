@@ -5,7 +5,7 @@ import Link from "next/link"
 
 export default function OnboardingSteps() {
   return (
-    <Alert className="border-primary/50">
+    <Alert className="border-primary/50 bg-secondary">
       <Rocket className="h-4 w-4 text-primary" />
       <AlertTitle className="text-primary">Welcome to Your Financial Hub!</AlertTitle>
       <AlertDescription>
