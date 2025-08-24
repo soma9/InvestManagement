@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -12,9 +12,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { PlusCircle, PiggyBank } from 'lucide-react';
 import { useTransactions } from '@/context/transaction-context';
-import BudgetCard, { type Budget } from '@/components/budgets/budget-card';
+import BudgetCard from '@/components/budgets/budget-card';
+import AddBudgetDialog from '@/components/budgets/add-budget-dialog';
+import type { Budget, BudgetData } from '@/components/budgets/budget-card';
 
-const initialBudgets: Omit<Budget, 'spent'>[] = [
+const initialBudgets: BudgetData[] = [
   {
     id: '1',
     name: 'Groceries',
@@ -43,17 +45,37 @@ const initialBudgets: Omit<Budget, 'spent'>[] = [
 
 export default function BudgetsPage() {
   const { transactions } = useTransactions();
+  const [budgets, setBudgets] = useState<BudgetData[]>(initialBudgets);
+  const [isAddDialogOpen, setAddDialogOpen] = useState(false);
 
-  const budgetsWithSpent = useMemo(() => {
-    return initialBudgets.map((budget) => {
+  const addBudget = (newBudget: Omit<BudgetData, 'id'>) => {
+    setBudgets((prev) => [
+      ...prev,
+      { ...newBudget, id: crypto.randomUUID() },
+    ]);
+  };
+
+  const updateBudget = (updatedBudget: BudgetData) => {
+    setBudgets((prev) =>
+      prev.map((b) => (b.id === updatedBudget.id ? updatedBudget : b))
+    );
+  };
+
+  const deleteBudget = (id: string) => {
+    setBudgets((prev) => prev.filter((b) => b.id !== id));
+  };
+
+
+  const budgetsWithSpent = useMemo((): Budget[] => {
+    return budgets.map((budget) => {
       const spent = transactions
         .filter(
-          (t) => t.type === 'expense' && t.category === budget.name.toLowerCase()
+          (t) => t.type === 'expense' && t.category?.toLowerCase() === budget.name.toLowerCase()
         )
         .reduce((acc, t) => acc + t.amount, 0);
       return { ...budget, spent };
     });
-  }, [transactions]);
+  }, [transactions, budgets]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -67,16 +89,34 @@ export default function BudgetsPage() {
             Track your spending and stay on top of your financial goals.
           </p>
         </div>
-        <Button>
-          <PlusCircle />
-          <span>Add New Budget</span>
-        </Button>
+        <AddBudgetDialog
+          open={isAddDialogOpen}
+          onOpenChange={setAddDialogOpen}
+          onAddBudget={addBudget}
+        >
+          <Button>
+            <PlusCircle />
+            <span>Add New Budget</span>
+          </Button>
+        </AddBudgetDialog>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {budgetsWithSpent.map((budget) => (
-          <BudgetCard key={budget.id} budget={budget} />
-        ))}
+        {budgetsWithSpent.length === 0 ? (
+           <Card className="md:col-span-2 lg:col-span-3">
+             <CardContent className="p-8 flex flex-col items-center justify-center text-center gap-4">
+                <PiggyBank className="w-16 h-16 text-muted" />
+                <h3 className="font-semibold text-xl">No Budgets Found</h3>
+                <p className="text-muted-foreground">
+                  Click "Add New Budget" to create your first spending budget.
+                </p>
+             </CardContent>
+           </Card>
+        ) : (
+          budgetsWithSpent.map((budget) => (
+            <BudgetCard key={budget.id} budget={budget} onUpdate={updateBudget} onDelete={deleteBudget} />
+          ))
+        )}
       </div>
     </div>
   );

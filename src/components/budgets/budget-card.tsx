@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -13,29 +14,38 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, ShoppingCart, Ticket, Car, Home } from 'lucide-react';
 import { useCurrency } from '@/context/currency-context';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
+import EditBudgetDialog from './edit-budget-dialog';
 
-export type Budget = {
+export type IconName = 'ShoppingCart' | 'Ticket' | 'Car' | 'Home';
+
+export type BudgetData = {
   id: string;
   name: string;
   amount: number;
+  icon: IconName;
+}
+export type Budget = BudgetData & {
   spent: number;
-  icon: 'ShoppingCart' | 'Ticket' | 'Car' | 'Home';
 };
 
 interface BudgetCardProps {
   budget: Budget;
+  onUpdate: (budget: BudgetData) => void;
+  onDelete: (id: string) => void;
 }
 
-const iconMap = {
+const iconMap: Record<IconName, React.ElementType> = {
   ShoppingCart: ShoppingCart,
   Ticket: Ticket,
   Car: Car,
   Home: Home,
 };
 
-export default function BudgetCard({ budget }: BudgetCardProps) {
+export default function BudgetCard({ budget, onUpdate, onDelete }: BudgetCardProps) {
   const { formatCurrency } = useCurrency();
-  const progress = (budget.spent / budget.amount) * 100;
+  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+  const progress = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0;
   const remaining = budget.amount - budget.spent;
   const Icon = iconMap[budget.icon];
 
@@ -62,21 +72,46 @@ export default function BudgetCard({ budget }: BudgetCardProps) {
           </div>
           <Progress value={progress > 100 ? 100 : progress} className="h-3" />
           <div className="mt-2">
-            <p className={`text-sm ${remaining < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
+            <p className={`text-sm ${remaining < 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
               {remaining >= 0 ? `${formatCurrency(remaining)} remaining` : `${formatCurrency(Math.abs(remaining))} over budget`}
             </p>
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-end gap-2">
-        <Button variant="ghost" size="icon">
-          <Edit className="h-4 w-4" />
-          <span className="sr-only">Edit Budget</span>
-        </Button>
-        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
-          <Trash2 className="h-4 w-4" />
-          <span className="sr-only">Delete Budget</span>
-        </Button>
+        <EditBudgetDialog
+          budget={budget}
+          onUpdateBudget={onUpdate}
+          open={isEditDialogOpen}
+          onOpenChange={setEditDialogOpen}
+        >
+            <Button variant="ghost" size="icon">
+              <Edit className="h-4 w-4" />
+              <span className="sr-only">Edit Budget</span>
+            </Button>
+        </EditBudgetDialog>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+              <Trash2 className="h-4 w-4" />
+              <span className="sr-only">Delete Budget</span>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the "{budget.name}" budget.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => onDelete(budget.id)}>
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardFooter>
     </Card>
   );
