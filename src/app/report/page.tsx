@@ -92,6 +92,9 @@ export default function ReportPage() {
           </div>
           <h2 className="text-xl font-semibold">Investment Performance Report</h2>
           <p className="text-muted-foreground">Generated on: {currentDate}</p>
+          <p className="text-muted-foreground text-sm mt-2 print:hidden">
+            You can print this report or save it as a PDF using the print button.
+          </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 print:hidden w-full sm:w-auto">
           <Button onClick={handleGenerateSummary} disabled={isLoading} className="w-full sm:w-auto">
