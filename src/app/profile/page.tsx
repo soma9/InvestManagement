@@ -125,6 +125,7 @@ export default function ProfilePage() {
                 <SelectItem value="USD">USD - US Dollar</SelectItem>
                 <SelectItem value="EUR">EUR - Euro</SelectItem>
                 <SelectItem value="JPY">JPY - Japanese Yen</SelectItem>
+                <SelectItem value="INR">INR - Indian Rupee</SelectItem>
               </SelectContent>
             </Select>
           </div>

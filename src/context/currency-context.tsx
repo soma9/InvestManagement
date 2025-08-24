@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useMemo } from 'react';
 
-type Currency = 'USD' | 'EUR' | 'JPY';
+type Currency = 'USD' | 'EUR' | 'JPY' | 'INR';
 
 type CurrencyContextType = {
   currency: Currency;
@@ -15,6 +15,7 @@ const exchangeRates: Record<Currency, number> = {
   USD: 1,
   EUR: 0.93,
   JPY: 157,
+  INR: 83,
 };
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);

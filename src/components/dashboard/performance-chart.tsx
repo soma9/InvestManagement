@@ -61,7 +61,7 @@ export default function PerformanceChart() {
           axisLine={false}
           tickMargin={8}
           tickFormatter={(value) => {
-            if (currency === 'JPY') {
+            if (currency === 'JPY' || currency === 'INR') {
                 return `${Math.round(value / 1000)}k`
             }
             return `$${(value / 1000).toFixed(0)}k`
