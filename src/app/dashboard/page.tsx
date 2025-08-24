@@ -16,6 +16,7 @@ import { ArrowUpRight, Wallet, Target, TrendingUp } from 'lucide-react';
 import { useCurrency } from '@/context/currency-context';
 import { useTransactions } from '@/context/transaction-context';
 import { useMemo } from 'react';
+import BudgetOverview from '@/components/dashboard/budget-overview';
 
 export default function DashboardPage() {
   const { formatCurrency } = useCurrency();
@@ -118,38 +119,41 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Financial Goals</CardTitle>
-          <CardDescription>
-            You are on your way to achieving your financial dreams.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="font-medium">Retirement Fund</span>
-              <span className="text-sm text-muted-foreground">{formatCurrency(250000)} / {formatCurrency(1000000)}</span>
+      <div className="grid gap-8 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Financial Goals</CardTitle>
+            <CardDescription>
+              You are on your way to achieving your financial dreams.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Retirement Fund</span>
+                <span className="text-sm text-muted-foreground">{formatCurrency(250000)} / {formatCurrency(1000000)}</span>
+              </div>
+              <Progress value={25} />
             </div>
-            <Progress value={25} />
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <span className="font-medium">Dream Vacation</span>
-              <span className="text-sm text-muted-foreground">{formatCurrency(8500)} / {formatCurrency(10000)}</span>
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Dream Vacation</span>
+                <span className="text-sm text-muted-foreground">{formatCurrency(8500)} / {formatCurrency(10000)}</span>
+              </div>
+              <Progress value={85} />
             </div>
-            <Progress value={85} />
-          </div>
-          <div className="flex justify-between">
-            <Link href="/goals">
-              <Button variant="outline">View All Goals</Button>
-            </Link>
-            <Link href="/report">
-              <Button>Generate Report</Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+            <div className="flex justify-between">
+              <Link href="/goals">
+                <Button variant="outline">View All Goals</Button>
+              </Link>
+              <Link href="/report">
+                <Button>Generate Report</Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+        <BudgetOverview />
+      </div>
     </div>
   );
 }
