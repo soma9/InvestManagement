@@ -7,6 +7,7 @@ import {
   SidebarHeader,
 } from '@/components/ui/sidebar';
 import Nav from './nav';
+import { SheetTitle } from '../ui/sheet';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
