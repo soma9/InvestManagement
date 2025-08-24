@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -40,6 +41,7 @@ const formSchema = z.object({
   date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'A valid date is required.',
   }),
+  category: z.string().optional(),
 });
 
 type AddTransactionDialogProps = {
@@ -62,8 +64,11 @@ export default function AddTransactionDialog({
       amount: undefined,
       type: 'income',
       date: new Date().toISOString().split('T')[0], // Today's date
+      category: 'other',
     },
   });
+
+  const transactionType = form.watch('type');
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     onAddTransaction(values);
@@ -130,6 +135,35 @@ export default function AddTransactionDialog({
                 </FormItem>
               )}
             />
+             {transactionType === 'expense' && (
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="groceries">Groceries</SelectItem>
+                        <SelectItem value="entertainment">Entertainment</SelectItem>
+                        <SelectItem value="transport">Transport</SelectItem>
+                        <SelectItem value="utilities">Utilities</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Categorize your expense to track your budgeting.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="date"

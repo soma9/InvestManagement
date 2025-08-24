@@ -1,3 +1,4 @@
+
 'use client';
 
 import { usePathname } from 'next/navigation';
@@ -10,6 +11,7 @@ import {
   User,
   Leaf,
   ArrowRightLeft,
+  PiggyBank,
 } from 'lucide-react';
 
 import {
@@ -27,6 +29,7 @@ const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/transactions', icon: ArrowRightLeft, label: 'Transactions' },
   { href: '/goals', icon: Target, label: 'Goals' },
+  { href: '/budgets', icon: PiggyBank, label: 'Budgets' },
   { href: '/recommendations', icon: BrainCircuit, label: 'Recommendations' },
   { href: '/education', icon: BookOpen, label: 'Education' },
 ];

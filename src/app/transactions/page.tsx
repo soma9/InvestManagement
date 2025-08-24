@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -65,13 +66,14 @@ export default function TransactionsPage() {
                 <TableHead>Description</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Type</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {transactions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No transactions yet.
                   </TableCell>
                 </TableRow>
@@ -85,6 +87,9 @@ export default function TransactionsPage() {
                         {transaction.type === 'income' ? <ArrowUpCircle className="h-3 w-3"/> : <ArrowDownCircle className="h-3 w-3" />}
                         <span>{transaction.type}</span>
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {transaction.category && <Badge variant="secondary">{transaction.category}</Badge>}
                     </TableCell>
                     <TableCell className={`text-right font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                       {transaction.type === 'income' ? '+' : '-'}
