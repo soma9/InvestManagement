@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -81,7 +82,7 @@ export default function ReportPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 bg-background print:bg-white text-foreground print:text-black">
-      <div className="flex justify-between items-start mb-8 print:mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8 print:mb-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Leaf className="w-8 h-8 text-primary" />
@@ -92,12 +93,12 @@ export default function ReportPage() {
           <h2 className="text-xl font-semibold">Investment Performance Report</h2>
           <p className="text-muted-foreground">Generated on: {currentDate}</p>
         </div>
-        <div className="flex gap-2 print:hidden">
-          <Button onClick={handleGenerateSummary} disabled={isLoading}>
+        <div className="flex flex-col sm:flex-row gap-2 print:hidden w-full sm:w-auto">
+          <Button onClick={handleGenerateSummary} disabled={isLoading} className="w-full sm:w-auto">
             {isLoading ? <Loader className="animate-spin" /> : <Wand2 />}
             <span>Get AI Summary</span>
           </Button>
-          <Button onClick={() => window.print()}>
+          <Button onClick={() => window.print()} className="w-full sm:w-auto">
             <div>
               <Printer className="mr-2 h-4 w-4" /> Print Report
             </div>
@@ -134,7 +135,7 @@ export default function ReportPage() {
         <CardContent className="p-6 space-y-8">
           <section>
             <h3 className="text-lg font-semibold mb-2 font-headline">Portfolio Summary</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div className="p-4 bg-secondary/50 rounded-lg">
                 <p className="text-sm text-muted-foreground">Total Value</p>
                 <p className="text-2xl font-bold">{formatCurrency(portfolioData.totalValue)}</p>
