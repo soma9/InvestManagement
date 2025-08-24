@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import AppLayout from '@/components/layout/app-layout';
 import { CurrencyProvider } from '@/context/currency-context';
+import { TransactionProvider } from '@/context/transaction-context';
 
 export const metadata: Metadata = {
   title: 'WealthWise',
@@ -35,7 +36,9 @@ export default function RootLayout({
         )}
       >
         <CurrencyProvider>
-          <AppLayout>{children}</AppLayout>
+          <TransactionProvider>
+            <AppLayout>{children}</AppLayout>
+          </TransactionProvider>
         </CurrencyProvider>
         <Toaster />
       </body>

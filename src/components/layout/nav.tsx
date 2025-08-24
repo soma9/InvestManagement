@@ -9,6 +9,7 @@ import {
   Target,
   User,
   Leaf,
+  ArrowRightLeft,
 } from 'lucide-react';
 
 import {
@@ -24,6 +25,7 @@ import React from 'react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/transactions', icon: ArrowRightLeft, label: 'Transactions' },
   { href: '/goals', icon: Target, label: 'Goals' },
   { href: '/recommendations', icon: BrainCircuit, label: 'Recommendations' },
   { href: '/education', icon: BookOpen, label: 'Education' },

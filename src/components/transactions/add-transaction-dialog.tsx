@@ -12,51 +12,61 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import type { Goal } from './goal-card';
+import type { Transaction } from '@/context/transaction-context';
 import type React from 'react';
 
 const formSchema = z.object({
-  name: z.string().min(3, 'Goal name must be at least 3 characters.'),
-  targetAmount: z.coerce.number().positive('Target amount must be positive.'),
-  deadline: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: 'Invalid date format.',
+  description: z.string().min(2, 'Description must be at least 2 characters.'),
+  amount: z.coerce.number().positive('Amount must be a positive number.'),
+  type: z.enum(['income', 'expense']),
+  date: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'A valid date is required.',
   }),
 });
 
-type AddGoalDialogProps = {
+type AddTransactionDialogProps = {
   children: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddGoal: (goal: Omit<Goal, 'id' | 'currentAmount'>) => void;
+  onAddTransaction: (transaction: Omit<Transaction, 'id'>) => void;
 };
 
-export default function AddGoalDialog({
+export default function AddTransactionDialog({
   children,
   open,
   onOpenChange,
-  onAddGoal,
-}: AddGoalDialogProps) {
+  onAddTransaction,
+}: AddTransactionDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      targetAmount: undefined,
-      deadline: '',
+      description: '',
+      amount: undefined,
+      type: 'income',
+      date: new Date().toISOString().split('T')[0], // Today's date
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    onAddGoal(values);
+    onAddTransaction(values);
     form.reset();
     onOpenChange(false);
   };
@@ -66,21 +76,21 @@ export default function AddGoalDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="font-headline">Add New Financial Goal</DialogTitle>
+          <DialogTitle className="font-headline">Add New Transaction</DialogTitle>
           <DialogDescription>
-            What new financial milestone are you aiming for?
+            Log a new income or expense to update your financial overview.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
             <FormField
               control={form.control}
-              name="name"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Goal Name</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Buy a new car" {...field} />
+                    <Input placeholder="e.g., Monthly Salary" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -88,12 +98,12 @@ export default function AddGoalDialog({
             />
             <FormField
               control={form.control}
-              name="targetAmount"
+              name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Target Amount ($)</FormLabel>
+                  <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="50000" {...field} />
+                    <Input type="number" placeholder="1000" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,10 +111,31 @@ export default function AddGoalDialog({
             />
             <FormField
               control={form.control}
-              name="deadline"
+              name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Deadline</FormLabel>
+                  <FormLabel>Type</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select transaction type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="income">Income</SelectItem>
+                      <SelectItem value="expense">Expense</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
                   </FormControl>
@@ -113,7 +144,7 @@ export default function AddGoalDialog({
               )}
             />
             <DialogFooter>
-              <Button type="submit">Create Goal</Button>
+              <Button type="submit">Add Transaction</Button>
             </DialogFooter>
           </form>
         </Form>

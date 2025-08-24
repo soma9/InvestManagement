@@ -14,9 +14,26 @@ import AllocationChart from '@/components/dashboard/allocation-chart';
 import PerformanceChart from '@/components/dashboard/performance-chart';
 import { ArrowUpRight, Wallet, Target, TrendingUp } from 'lucide-react';
 import { useCurrency } from '@/context/currency-context';
+import { useTransactions } from '@/context/transaction-context';
+import { useMemo } from 'react';
 
 export default function DashboardPage() {
   const { formatCurrency } = useCurrency();
+  const { transactions } = useTransactions();
+
+  const totalValue = useMemo(() => {
+    return transactions.reduce((acc, t) => {
+      if (t.type === 'income') return acc + t.amount;
+      return acc - t.amount;
+    }, 0);
+  }, [transactions]);
+  
+  const ytdGain = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return transactions
+      .filter(t => new Date(t.date).getFullYear() === currentYear && t.type === 'income')
+      .reduce((acc, t) => acc + t.amount, 0);
+  }, [transactions]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -36,7 +53,7 @@ export default function DashboardPage() {
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(125430.50)}</div>
+            <div className="text-2xl font-bold">{formatCurrency(totalValue)}</div>
             <p className="text-xs text-muted-foreground">+2.1% from last month</p>
           </CardContent>
         </Card>
@@ -46,7 +63,7 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">+{formatCurrency(8120.75)}</div>
+            <div className="text-2xl font-bold text-green-600">+{formatCurrency(ytdGain)}</div>
             <p className="text-xs text-muted-foreground">+15.3% this year</p>
           </CardContent>
         </Card>
