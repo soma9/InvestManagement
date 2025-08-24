@@ -5,9 +5,9 @@ import Link from "next/link"
 
 export default function OnboardingSteps() {
   return (
-    <Alert>
-      <Rocket className="h-4 w-4" />
-      <AlertTitle>Welcome to Your Financial Hub!</AlertTitle>
+    <Alert className="border-primary/50">
+      <Rocket className="h-4 w-4 text-primary" />
+      <AlertTitle className="text-primary">Welcome to Your Financial Hub!</AlertTitle>
       <AlertDescription>
         <p className="mb-2">Follow these steps to get the most out of the app:</p>
         <ol className="list-decimal list-inside space-y-1">
