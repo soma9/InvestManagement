@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import AllocationChart from '@/components/dashboard/allocation-chart';
 import PerformanceChart from '@/components/dashboard/performance-chart';
-import { ArrowUpRight, DollarSign, Target, TrendingUp } from 'lucide-react';
+import { ArrowUpRight, Wallet, Target, TrendingUp } from 'lucide-react';
 import { useCurrency } from '@/context/currency-context';
 
 export default function DashboardPage() {
@@ -33,7 +33,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(125430.50)}</div>
