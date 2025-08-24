@@ -23,6 +23,9 @@ export default function OnboardingSteps() {
             <li>
                 Define your long-term objectives on the <Link href="/goals" className="font-semibold underline hover:text-primary">Goals</Link> page.
             </li>
+            <li>
+                Generate a detailed <Link href="/report" className="font-semibold underline hover:text-primary">Performance Report</Link> to see your progress.
+            </li>
         </ol>
       </AlertDescription>
     </Alert>
