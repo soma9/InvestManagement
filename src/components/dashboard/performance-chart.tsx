@@ -74,7 +74,7 @@ export default function PerformanceChart() {
               labelFormatter={(value, payload) =>
                 `Value in ${payload[0]?.payload.month}`
               }
-              formatter={(value) => formatCurrency(chartData.find(d => d.month === payload[0].payload.month)?.portfolio || 0)}
+              formatter={(value, name, item) => formatCurrency(chartData.find(d => d.month === item.payload.month)?.portfolio || 0)}
             />
           }
         />
