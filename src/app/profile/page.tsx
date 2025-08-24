@@ -13,14 +13,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User } from 'lucide-react';
+import { User, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useCurrency } from '@/context/currency-context';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function ProfilePage() {
   const [name, setName] = useState('Alex Doe');
   const [email, setEmail] = useState('alex.doe@example.com');
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
+  const { currency, setCurrency } = useCurrency();
 
   const handleSave = () => {
     setIsEditing(false);
@@ -93,6 +102,33 @@ export default function ProfilePage() {
             <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
           )}
         </CardFooter>
+      </Card>
+      
+      <Card className="w-full max-w-2xl">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wallet />
+            Regional Settings
+          </CardTitle>
+          <CardDescription>
+            Set your preferred currency for the application.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <Label htmlFor="currency">Currency</Label>
+            <Select value={currency} onValueChange={setCurrency}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">USD - US Dollar</SelectItem>
+                <SelectItem value="EUR">EUR - Euro</SelectItem>
+                <SelectItem value="JPY">JPY - Japanese Yen</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

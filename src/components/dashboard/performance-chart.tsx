@@ -6,6 +6,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
+import { useCurrency } from '@/context/currency-context';
 
 const chartData = [
   { month: 'Jan', portfolio: 86000 },
@@ -30,11 +31,17 @@ const chartConfig = {
 };
 
 export default function PerformanceChart() {
+  const { formatCurrency, convertFromUSD, currency } = useCurrency();
+  const convertedChartData = chartData.map(item => ({
+      ...item,
+      portfolio: convertFromUSD(item.portfolio),
+  }));
+
   return (
     <ChartContainer config={chartConfig} className="h-[300px] w-full">
       <AreaChart
         accessibilityLayer
-        data={chartData}
+        data={convertedChartData}
         margin={{
           left: 12,
           right: 12,
@@ -53,7 +60,12 @@ export default function PerformanceChart() {
           tickLine={false}
           axisLine={false}
           tickMargin={8}
-          tickFormatter={(value) => `$${value / 1000}k`}
+          tickFormatter={(value) => {
+            if (currency === 'JPY') {
+                return `${Math.round(value / 1000)}k`
+            }
+            return `$${(value / 1000).toFixed(0)}k`
+          }}
         />
         <ChartTooltip
           cursor={false}
@@ -62,12 +74,7 @@ export default function PerformanceChart() {
               labelFormatter={(value, payload) =>
                 `Value in ${payload[0]?.payload.month}`
               }
-              formatter={(value) =>
-                new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                }).format(value as number)
-              }
+              formatter={(value) => formatCurrency(chartData.find(d => d.month === payload[0].payload.month)?.portfolio || 0)}
             />
           }
         />

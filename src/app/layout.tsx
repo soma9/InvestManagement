@@ -3,6 +3,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import AppLayout from '@/components/layout/app-layout';
+import { CurrencyProvider } from '@/context/currency-context';
 
 export const metadata: Metadata = {
   title: 'WealthWise',
@@ -33,7 +34,9 @@ export default function RootLayout({
           'min-h-screen bg-background font-body antialiased'
         )}
       >
-        <AppLayout>{children}</AppLayout>
+        <CurrencyProvider>
+          <AppLayout>{children}</AppLayout>
+        </CurrencyProvider>
         <Toaster />
       </body>
     </html>

@@ -10,6 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, Calendar } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
+import { useCurrency } from '@/context/currency-context';
 
 export type Goal = {
   id: string;
@@ -24,6 +25,7 @@ interface GoalCardProps {
 }
 
 export default function GoalCard({ goal }: GoalCardProps) {
+  const { formatCurrency } = useCurrency();
   const progress = (goal.currentAmount / goal.targetAmount) * 100;
   const deadlineDate = new Date(goal.deadline);
 
@@ -40,19 +42,10 @@ export default function GoalCard({ goal }: GoalCardProps) {
         <div>
           <div className="flex justify-between items-baseline mb-2">
             <span className="text-2xl font-bold text-primary">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                maximumFractionDigits: 0,
-              }).format(goal.currentAmount)}
+              {formatCurrency(goal.currentAmount)}
             </span>
             <span className="text-sm text-muted-foreground">
-              of{' '}
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                maximumFractionDigits: 0,
-              }).format(goal.targetAmount)}
+              of {formatCurrency(goal.targetAmount)}
             </span>
           </div>
           <Progress value={progress} className="h-3" />

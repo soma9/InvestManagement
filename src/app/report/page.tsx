@@ -13,8 +13,10 @@ import { Leaf, Printer } from 'lucide-react';
 import AllocationChart from '@/components/dashboard/allocation-chart';
 import PerformanceChart from '@/components/dashboard/performance-chart';
 import { useState, useEffect } from 'react';
+import { useCurrency } from '@/context/currency-context';
 
 export default function ReportPage() {
+  const { formatCurrency } = useCurrency();
   const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
@@ -52,11 +54,11 @@ export default function ReportPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div className="p-4 bg-secondary/50 rounded-lg">
                 <p className="text-sm text-muted-foreground">Total Value</p>
-                <p className="text-2xl font-bold">$125,430.50</p>
+                <p className="text-2xl font-bold">{formatCurrency(125430.50)}</p>
               </div>
               <div className="p-4 bg-secondary/50 rounded-lg">
                 <p className="text-sm text-muted-foreground">YTD Gain</p>
-                <p className="text-2xl font-bold text-green-600">+$8,120.75</p>
+                <p className="text-2xl font-bold text-green-600">+{formatCurrency(8120.75)}</p>
               </div>
                <div className="p-4 bg-secondary/50 rounded-lg">
                 <p className="text-sm text-muted-foreground">YTD Return</p>
@@ -94,15 +96,15 @@ export default function ReportPage() {
              <div className="space-y-4">
                 <div className="p-4 border rounded-lg">
                     <p className="font-medium">Retirement Fund</p>
-                    <p className="text-sm text-muted-foreground">Progress: 25% ($250,000 / $1,000,000)</p>
+                    <p className="text-sm text-muted-foreground">Progress: 25% ({formatCurrency(250000)} / {formatCurrency(1000000)})</p>
                 </div>
                 <div className="p-4 border rounded-lg">
                     <p className="font-medium">Dream Vacation</p>
-                    <p className="text-sm text-muted-foreground">Progress: 85% ($8,500 / $10,000)</p>
+                    <p className="text-sm text-muted-foreground">Progress: 85% ({formatCurrency(8500)} / {formatCurrency(10000)})</p>
                 </div>
                 <div className="p-4 border rounded-lg">
                     <p className="font-medium">New Car</p>
-                    <p className="text-sm text-muted-foreground">Progress: 37.5% ($15,000 / $40,000)</p>
+                    <p className="text-sm text-muted-foreground">Progress: 37.5% ({formatCurrency(15000)} / {formatCurrency(40000)})</p>
                 </div>
              </div>
           </section>

@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   Card,
@@ -11,8 +13,11 @@ import { Progress } from '@/components/ui/progress';
 import AllocationChart from '@/components/dashboard/allocation-chart';
 import PerformanceChart from '@/components/dashboard/performance-chart';
 import { ArrowUpRight, DollarSign, Target, TrendingUp } from 'lucide-react';
+import { useCurrency } from '@/context/currency-context';
 
 export default function DashboardPage() {
+  const { formatCurrency } = useCurrency();
+
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -31,7 +36,7 @@ export default function DashboardPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$125,430.50</div>
+            <div className="text-2xl font-bold">{formatCurrency(125430.50)}</div>
             <p className="text-xs text-muted-foreground">+2.1% from last month</p>
           </CardContent>
         </Card>
@@ -41,7 +46,7 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">+$8,120.75</div>
+            <div className="text-2xl font-bold text-green-600">+{formatCurrency(8120.75)}</div>
             <p className="text-xs text-muted-foreground">+15.3% this year</p>
           </CardContent>
         </Card>
@@ -107,14 +112,14 @@ export default function DashboardPage() {
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <span className="font-medium">Retirement Fund</span>
-              <span className="text-sm text-muted-foreground">$250,000 / $1,000,000</span>
+              <span className="text-sm text-muted-foreground">{formatCurrency(250000)} / {formatCurrency(1000000)}</span>
             </div>
             <Progress value={25} />
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <span className="font-medium">Dream Vacation</span>
-              <span className="text-sm text-muted-foreground">$8,500 / $10,000</span>
+              <span className="text-sm text-muted-foreground">{formatCurrency(8500)} / {formatCurrency(10000)}</span>
             </div>
             <Progress value={85} />
           </div>
