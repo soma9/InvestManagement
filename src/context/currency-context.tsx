@@ -21,7 +21,7 @@ const exchangeRates: Record<Currency, number> = {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currency, setCurrency] = useState<Currency>('USD');
+  const [currency, setCurrency] = useState<Currency>('INR');
 
   const convertFromUSD = (value: number) => {
     return value * exchangeRates[currency];
