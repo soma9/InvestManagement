@@ -20,8 +20,34 @@ type TransactionContextType = {
 
 const TransactionContext = createContext<TransactionContextType | undefined>(undefined);
 
+const initialTransactions: Transaction[] = [
+    {
+      id: '1',
+      description: 'Monthly Salary',
+      amount: 5000,
+      type: 'income',
+      date: new Date(new Date().setMonth(new Date().getMonth() - 2)).toISOString(),
+    },
+    {
+        id: '2',
+        description: 'Groceries',
+        amount: 300,
+        type: 'expense',
+        category: 'groceries',
+        date: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString(),
+    },
+    {
+        id: '3',
+        description: 'Rent',
+        amount: 1500,
+        type: 'expense',
+        category: 'utilities',
+        date: new Date().toISOString(),
+    }
+  ];
+
 export const TransactionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
 
   const addTransaction = (transaction: Omit<Transaction, 'id'>) => {
     setTransactions(prev => [...prev, { ...transaction, id: crypto.randomUUID() }].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()));

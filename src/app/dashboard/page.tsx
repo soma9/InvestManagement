@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -17,6 +18,7 @@ import { useCurrency } from '@/context/currency-context';
 import { useTransactions } from '@/context/transaction-context';
 import { useMemo } from 'react';
 import BudgetOverview from '@/components/dashboard/budget-overview';
+import OnboardingSteps from '@/components/dashboard/onboarding-steps';
 
 export default function DashboardPage() {
   const { formatCurrency } = useCurrency();
@@ -49,8 +51,10 @@ export default function DashboardPage() {
   const ytdGainPercentage = useMemo(() => {
     const totalIncome = transactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
     if(totalIncome === 0) return '0.0';
-    return (ytdGain / totalIncome * 100).toFixed(1);
-  }, [transactions, ytdGain]);
+    const lastMonthValue = totalValue - ytdGain;
+    if (lastMonthValue === 0) return (ytdGain > 0 ? '100.0' : '0.0');
+    return (ytdGain / Math.abs(lastMonthValue) * 100).toFixed(1);
+  }, [transactions, ytdGain, totalValue]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -62,6 +66,8 @@ export default function DashboardPage() {
           Here's a snapshot of your financial journey.
         </p>
       </div>
+
+      <OnboardingSteps />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
