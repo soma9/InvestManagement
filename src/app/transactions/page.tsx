@@ -17,18 +17,39 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button';
-import { PlusCircle, ArrowRightLeft, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import { PlusCircle, ArrowRightLeft, ArrowUpCircle, ArrowDownCircle, Trash2 } from 'lucide-react';
 import { useTransactions } from '@/context/transaction-context';
 import { useCurrency } from '@/context/currency-context';
 import AddTransactionDialog from '@/components/transactions/add-transaction-dialog';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { useToast } from '@/hooks/use-toast';
 
 export default function TransactionsPage() {
-  const { transactions, addTransaction } = useTransactions();
+  const { transactions, addTransaction, deleteTransaction } = useTransactions();
   const { formatCurrency } = useCurrency();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handleDelete = (id: string) => {
+    deleteTransaction(id);
+    toast({
+      title: "Transaction Deleted",
+      description: "The transaction has been successfully removed.",
+    });
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -68,13 +89,14 @@ export default function TransactionsPage() {
                 <TableHead>Type</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="w-[50px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {transactions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
-                    No transactions yet.
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    No transactions yet. Click "Add Transaction" to get started.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -91,9 +113,33 @@ export default function TransactionsPage() {
                     <TableCell>
                       {transaction.category && <Badge variant="secondary">{transaction.category}</Badge>}
                     </TableCell>
-                    <TableCell className={`text-right font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                    <TableCell className={`text-right font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-destructive'}`}>
                       {transaction.type === 'income' ? '+' : '-'}
                       {formatCurrency(transaction.amount)}
+                    </TableCell>
+                    <TableCell>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete Transaction</span>
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete this transaction record.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(transaction.id)}>
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))

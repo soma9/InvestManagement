@@ -15,27 +15,26 @@ export type Transaction = {
 type TransactionContextType = {
   transactions: Transaction[];
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
+  deleteTransaction: (id: string) => void;
 };
-
-const initialTransactions: Transaction[] = [
-    { id: '1', description: 'Initial savings', amount: 125430.50, type: 'income', date: new Date().toISOString() },
-    { id: '2', description: 'Groceries', amount: 75.5, type: 'expense', date: new Date().toISOString(), category: 'groceries' },
-    { id: '3', description: 'Freelance Project', amount: 1500, type: 'income', date: new Date(new Date().setDate(new Date().getDate() - 5)).toISOString() },
-    { id: '4', description: 'Dinner Out', amount: 120, type: 'expense', date: new Date(new Date().setDate(new Date().getDate() - 2)).toISOString(), category: 'entertainment' },
-];
 
 const TransactionContext = createContext<TransactionContextType | undefined>(undefined);
 
 export const TransactionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const addTransaction = (transaction: Omit<Transaction, 'id'>) => {
     setTransactions(prev => [...prev, { ...transaction, id: crypto.randomUUID() }].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+  };
+
+  const deleteTransaction = (id: string) => {
+    setTransactions(prev => prev.filter(t => t.id !== id));
   };
   
   const value = useMemo(() => ({
     transactions,
     addTransaction,
+    deleteTransaction,
   }), [transactions]);
 
   return (

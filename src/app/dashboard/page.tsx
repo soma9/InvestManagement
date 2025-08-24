@@ -31,10 +31,26 @@ export default function DashboardPage() {
   
   const ytdGain = useMemo(() => {
     const currentYear = new Date().getFullYear();
-    return transactions
-      .filter(t => new Date(t.date).getFullYear() === currentYear && t.type === 'income')
+    const startOfLastMonth = new Date();
+    startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
+    startOfLastMonth.setDate(1);
+
+    const lastMonthIncome = transactions
+      .filter(t => new Date(t.date) >= startOfLastMonth && t.type === 'income')
       .reduce((acc, t) => acc + t.amount, 0);
+
+    const lastMonthExpense = transactions
+      .filter(t => new Date(t.date) >= startOfLastMonth && t.type === 'expense')
+      .reduce((acc, t) => acc + t.amount, 0);
+
+    return lastMonthIncome - lastMonthExpense;
   }, [transactions]);
+
+  const ytdGainPercentage = useMemo(() => {
+    const totalIncome = transactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
+    if(totalIncome === 0) return '0.0';
+    return (ytdGain / totalIncome * 100).toFixed(1);
+  }, [transactions, ytdGain]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -55,7 +71,9 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalValue)}</div>
-            <p className="text-xs text-muted-foreground">+2.1% from last month</p>
+             <p className={`text-xs ${ytdGain >= 0 ? 'text-green-600' : 'text-destructive'}`}>
+                {ytdGain >= 0 ? '+' : ''}{formatCurrency(ytdGain)} ({ytdGainPercentage}%) from last month
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -64,8 +82,8 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">+{formatCurrency(ytdGain)}</div>
-            <p className="text-xs text-muted-foreground">+15.3% this year</p>
+            <div className={`text-2xl font-bold ${ytdGain >= 0 ? 'text-green-600' : 'text-destructive'}`}>{ytdGain >= 0 ? '+' : ''}{formatCurrency(ytdGain)}</div>
+            <p className="text-xs text-muted-foreground">Year to date</p>
           </CardContent>
         </Card>
         <Card>
